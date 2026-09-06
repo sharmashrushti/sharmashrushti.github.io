@@ -1,0 +1,415 @@
+/* ==========================================================================
+   scroll-home.css
+   One-page, full-bleed scrolling homepage styled after regajha.com:
+   full-height snapped sections, a hamburger overlay nav, and a chevron
+   scroll cue between each section.
+   ========================================================================== */
+
+:root {
+  --sh-ink: #2e2115;
+  --sh-dark: #4e2f1c;
+  --sh-orange: #1a1a1a;
+  --sh-orange-hover: #000000;
+  --sh-white: #f7eede;
+  --sh-pure-white: #ffffff;
+  --sh-gray-text: #5b4636;
+  --sh-font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+html.sh-active {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+body.sh-active {
+  margin: 0;
+  font-family: var(--sh-font);
+  color: var(--sh-ink);
+  overflow-x: hidden;
+}
+
+.sh-page {
+  width: 100%;
+  transition: transform 0.35s ease;
+}
+
+.sh-page.sh-shifted {
+  transform: translateX(-48px);
+}
+
+.sh-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  scroll-snap-align: start;
+  box-sizing: border-box;
+}
+
+/* ---------- nav ---------- */
+
+.sh-nav {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 32px 40px;
+}
+
+.sh-nav-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 1001;
+  position: relative;
+}
+
+.sh-nav-toggle span {
+  display: block;
+  width: 26px;
+  height: 2px;
+  background: var(--sh-white);
+  transition: background 0.2s ease, transform 0.25s ease, opacity 0.2s ease;
+}
+
+.sh-nav-toggle.is-dark span {
+  background: var(--sh-ink);
+}
+
+.sh-nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--sh-ink);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+}
+
+.sh-nav-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sh-nav-overlay.is-open ~ .sh-nav .sh-nav-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.sh-nav-overlay.is-open ~ .sh-nav .sh-nav-toggle span:nth-child(2) {
+  opacity: 0;
+}
+.sh-nav-overlay.is-open ~ .sh-nav .sh-nav-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.sh-nav-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.sh-nav-links li {
+  margin: 18px 0;
+}
+
+.sh-nav-links a {
+  color: var(--sh-white);
+  text-decoration: none;
+  font-size: 1.6rem;
+  letter-spacing: 0.03em;
+  transition: color 0.2s ease;
+}
+
+.sh-nav-links a:hover {
+  color: var(--sh-orange);
+}
+
+/* ---------- chevron scroll cue ---------- */
+
+.sh-chevron {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  z-index: 5;
+  animation: sh-bob 2.2s ease-in-out infinite;
+}
+
+.sh-chevron svg {
+  width: 26px;
+  height: 26px;
+  stroke: var(--sh-ink);
+  stroke-width: 2;
+  fill: none;
+}
+
+.sh-chevron.sh-chevron--light svg {
+  stroke: var(--sh-white);
+}
+
+.sh-chevron--top {
+  position: relative;
+  bottom: auto;
+  margin: 40px auto 0;
+  display: flex;
+}
+
+@keyframes sh-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(8px); }
+}
+
+/* ---------- hero ---------- */
+
+.sh-hero {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-height: 0;
+  height: auto;
+  aspect-ratio: 3 / 2;
+  max-height: 100vh;
+}
+
+.sh-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(46, 33, 21, 0.45);
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .sh-hero {
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.sh-hero-content {
+  position: absolute;
+  left: 32px;
+  bottom: 36px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.sh-hero-name {
+  color: var(--sh-white);
+  font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  min-height: 1.2em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.sh-hero-cursor {
+  display: inline-block;
+  width: 4px;
+  height: 1em;
+  vertical-align: -0.12em;
+  background: var(--sh-white);
+  margin-left: 5px;
+  animation: sh-blink 0.9s steps(1) infinite;
+}
+
+@keyframes sh-blink {
+  50% { opacity: 0; }
+}
+
+/* ---------- bio ---------- */
+
+.sh-bio {
+  background: var(--sh-pure-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px 80px;
+}
+
+.sh-bio-inner {
+  max-width: 760px;
+  width: 100%;
+  font-size: 1.15rem;
+  line-height: 1.85;
+  color: var(--sh-gray-text);
+}
+
+.sh-bio-inner p {
+  margin: 0 0 1.6em;
+}
+
+.sh-bio-inner a {
+  color: var(--sh-orange);
+  text-decoration: none;
+}
+
+.sh-bio-inner a:hover {
+  text-decoration: underline;
+  color: var(--sh-orange-hover);
+}
+
+.sh-bio-inner strong {
+  color: var(--sh-ink);
+}
+
+/* ---------- portfolio ---------- */
+
+.sh-portfolio {
+  background: var(--sh-white);
+  color: var(--sh-ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 90px 24px 90px;
+  box-sizing: border-box;
+}
+
+.sh-portfolio-title {
+  font-size: 3.2rem;
+  font-weight: 800;
+  margin: 0 0 10px;
+  text-align: center;
+}
+
+.sh-portfolio-subtitle {
+  font-style: italic;
+  color: var(--sh-ink);
+  margin: 0 0 64px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.sh-portfolio-groups {
+  max-width: 720px;
+  width: 100%;
+}
+
+.sh-portfolio-group {
+  margin-bottom: 56px;
+}
+
+.sh-portfolio-group:last-child {
+  margin-bottom: 0;
+}
+
+.sh-portfolio-group h3 {
+  font-size: 1.7rem;
+  font-weight: 700;
+  margin: 0 0 26px;
+}
+
+.sh-portfolio-item {
+  margin: 0 0 22px;
+  line-height: 1.5;
+}
+
+.sh-portfolio-item a {
+  color: var(--sh-ink);
+  text-decoration: none;
+  font-size: 1.15rem;
+}
+
+.sh-portfolio-item a:hover {
+  text-decoration: underline;
+  color: var(--sh-dark);
+}
+
+.sh-portfolio-item .sh-byline {
+  font-style: italic;
+  color: var(--sh-gray-text);
+  font-size: 1.15rem;
+}
+
+/* ---------- footer ---------- */
+
+.sh-footer {
+  background: var(--sh-pure-white);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
+  padding: 70px 24px 0;
+  box-sizing: border-box;
+}
+
+.sh-footer-email {
+  font-size: 1.2rem;
+  color: var(--sh-ink);
+  margin-bottom: 28px;
+}
+
+.sh-footer-email a {
+  color: var(--sh-orange);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.sh-footer-email a:hover {
+  text-decoration: underline;
+}
+
+.sh-social {
+  display: flex;
+  gap: 22px;
+  margin-bottom: 60px;
+}
+
+.sh-social a {
+  color: var(--sh-ink);
+  display: flex;
+}
+
+.sh-social svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+.sh-footer-bar {
+  width: calc(100% + 48px);
+  margin-left: -24px;
+  margin-right: -24px;
+  background: var(--sh-white);
+  color: var(--sh-ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  box-sizing: border-box;
+  font-size: 0.9rem;
+}
+
+.sh-footer-bar a {
+  color: var(--sh-ink);
+  text-decoration: none;
+}
+
+.sh-footer-bar a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .sh-portfolio-title { font-size: 2.2rem; }
+  .sh-bio-inner { font-size: 1.05rem; }
+  .sh-hero-caret { margin-left: 28px; }
+  .sh-footer-bar { flex-direction: column; gap: 8px; text-align: center; }
+}
